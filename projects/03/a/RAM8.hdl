@@ -15,5 +15,18 @@ CHIP RAM8 {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+	/* Distribute the LOAD signal to the right address */
+	DMux8Way(in=load, sel=address, a=load000, b=load001, c=load010, d=load011, e=load100, f=load101, g=load110, h=load111);
+
+	/* Output is selected from the right address too */
+	Mux8Way16(a=regout000, b=regout001, c=regout010, d=regout011, e=regout100, f=regout101, g=regout110, h=regout111, out=out, sel=address);
+
+	Register(in=in, out=regout000, load=load000);
+	Register(in=in, out=regout001, load=load001);
+	Register(in=in, out=regout010, load=load010);
+	Register(in=in, out=regout011, load=load011);
+	Register(in=in, out=regout100, load=load100);
+	Register(in=in, out=regout101, load=load101);
+	Register(in=in, out=regout110, load=load110);
+	Register(in=in, out=regout111, load=load111);
 }

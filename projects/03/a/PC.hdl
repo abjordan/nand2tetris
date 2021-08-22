@@ -16,5 +16,28 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+	// Mux8Way16(
+	// 	a=regout,         /* 000 */
+	// 	b[0..15]=false,   /* 001 -- RESET */
+	// 	c=in,             /* 010 -- LOAD  */
+	// 	d=regout,         /* 011 */
+	// 	e=incIn,          /* 100 -- INCR  */
+	// 	f=regout,         /* Spec is unclear: what should happen if multiple bits are set? */
+	// 	g=regout,
+	// 	h=regout,
+	// 	out=selector,
+	// 	sel[0]=reset, sel[1]=load, sel[2]=inc
+	// 	);
+
+	Inc16(in=regout, out=incremented);
+
+	/* The spec implies that you should do this, but this isn't the same as 
+	*  the pseudo-code at the top of this file... The "else if" means exclusive
+	*  execution, not nested sequential. BOO.
+	*/
+	Mux16(a=regout, b=incremented, sel=inc, out=o1);
+	Mux16(a=o1, b=in, sel=load, out=o2);
+	Mux16(a=o2, b=false, sel=reset, out=o3);
+
+	Register(in=o3, out=regout, out=out, load=true);	
 }
